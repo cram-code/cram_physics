@@ -336,7 +336,7 @@
     (object-shape ?world ?obj-name ?shape)
     (%object ?world ?obj-name ?obj)
     (lisp-fun aabb ?obj ?aabb)
-    (lisp-fun bt:bounding-box-dimensions ?aabb ?dims)
+    (lisp-fun bullet:bounding-box-dimensions ?aabb ?dims)
     (%object-size-without-handles ?world ?obj ?shape ?size))
   ;;
   (<- (%object-size-without-handles ?world ?obj ?shape ?size)

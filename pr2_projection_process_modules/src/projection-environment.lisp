@@ -37,7 +37,7 @@
 (define-projection-environment pr2-bullet-projection-environment
   :special-variable-initializers
   ((cram-roslisp-common:*tf* (make-instance 'tf:transformer))
-   ;; (*current-bullet-world* (bt:copy-world *current-bullet-world*))
+   ;; (*current-bullet-world* (bullet:copy-world *current-bullet-world*))
    (*current-timeline* (btr:timeline-init *current-bullet-world*))
    (desig:*default-role* 'projection-role)
    (*projection-clock* (make-instance 'partially-ordered-clock))

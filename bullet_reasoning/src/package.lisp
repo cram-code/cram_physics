@@ -32,7 +32,7 @@
 
 (desig-props:def-desig-package bullet-reasoning
   (:nicknames :btr)
-  (:use #:common-lisp #:crs #:bt #:bt-vis #:cut #:cram-manipulation-knowledge)
+  (:use #:common-lisp #:crs #:bullet #:bt-vis #:cut #:cram-manipulation-knowledge)
   (:import-from #:alexandria compose curry rcurry with-gensyms copy-hash-table)
   (:import-from #:desig desig-solutions)
   (:shadowing-import-from #:cl-bullet points)
