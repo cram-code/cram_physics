@@ -65,7 +65,7 @@
            find-objects-below bullet-world object
            retract step simulate-realtime object-pose object-bottom-pose
            position orientation poses-equal contact stable
-           robot-not-in-collision-with-environment
+           object-not-in-collision ik-solution-not-in-collision
            link-contacts supported-by above below visible
            occluding-objects occluding-object valid-grasp grasp side reachable
            def-grasp def-tool object-grasp
@@ -93,4 +93,4 @@
            timeline-current-world-state timeline-lookup
            holds-in-world holds occurs at
            during throughout with-timeline)
-  (:desig-properties mug mondamin plate pot handle cutlery knife fork))
+  (:desig-properties mug mondamin plate pot handle cutlery knife fork spatula))
