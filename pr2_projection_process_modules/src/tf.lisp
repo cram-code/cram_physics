@@ -52,6 +52,18 @@
       (cl-transforms:make-identity-vector)
       (cl-transforms:make-identity-rotation))
      :suppress-callbacks t)
+    (cl-tf2:send-transform
+     *tf2-tb*
+     (cl-tf2:make-stamped-transform
+      odom-frame base-frame (roslisp:ros-time)
+      (cl-transforms:make-transform (cl-transforms:origin ?robot-pose)
+        (cl-transforms:orientation ?robot-pose))))
+    (cl-tf2:send-transform
+     *tf2-tb*
+     (cl-tf2:make-stamped-transform
+      map-frame odom-frame (roslisp:ros-time)
+      (cl-transforms:make-transform (cl-transforms:make-identity-vector)
+        (cl-transforms:make-identity-rotation))))
     (bullet-reasoning:set-tf-from-robot-state *tf* ?robot-instance)))
 
 (defmethod cram-plan-knowledge:on-event update-tf
