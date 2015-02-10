@@ -46,5 +46,5 @@
    (cut:*timestamp-function* #'projection-timestamp-function))
   :process-module-definitions
   (projection-perception projection-ptu projection-manipulation projection-navigation)
-  :startup (update-tf)
+  :startup (init-projection-tf)
   :shutdown (setf *last-timeline* *current-timeline*))
