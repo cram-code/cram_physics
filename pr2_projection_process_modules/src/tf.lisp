@@ -61,10 +61,12 @@
     (cl-tf2:send-transform
      *tf2-tb*
      (cl-tf2:make-stamped-transform
-      map-frame odom-frame (roslisp:ros-time)
-      (cl-transforms:make-transform (cl-transforms:make-identity-vector)
-        (cl-transforms:make-identity-rotation))))
-    (bullet-reasoning:set-tf-from-robot-state *tf* ?robot-instance)))
+      odom-frame map-frame (roslisp:ros-time)
+      (cl-transforms:transform-inv 
+        (cl-transforms:make-transform (cl-transforms:make-identity-vector)
+          (cl-transforms:make-identity-rotation)))))
+    (bullet-reasoning:set-tf-from-robot-state *tf* ?robot-instance)
+    (bullet-reasoning::set-tf2-from-robot-state *tf2-tb* *tf* ?robot-instance)))
 
 ;; Needed to prevent an extrapolation error when the tf2 cache contains only one <frame>-<odom-combined> transform.
 ;; Because update-tf will register <base-frame>-<odom-combined> and <odom-combined>-<map-frame> sequentially, 
