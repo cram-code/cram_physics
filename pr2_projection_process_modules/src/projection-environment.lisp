@@ -36,7 +36,9 @@
 
 (define-projection-environment pr2-bullet-projection-environment
   :special-variable-initializers
-  ((cram-roslisp-common:*tf* (make-instance 'tf:transformer))
+  ((cram-roslisp-common:*tf* (make-instance 'tf:transformer)) 
+   (cram-roslisp-common:*tf2* (make-instance 'cl-tf2:buffer-client))
+   (cram-roslisp-common:*tf2-tb* (cl-tf2:make-transform-broadcaster :topic "/tf"))
    ;; (*current-bullet-world* (bt:copy-world *current-bullet-world*))
    (*current-timeline* (btr:timeline-init *current-bullet-world*))
    (desig:*default-role* 'projection-role)
@@ -44,5 +46,5 @@
    (cut:*timestamp-function* #'projection-timestamp-function))
   :process-module-definitions
   (projection-perception projection-ptu projection-manipulation projection-navigation)
-  :startup (update-tf)
+  :startup (init-projection-tf)
   :shutdown (setf *last-timeline* *current-timeline*))

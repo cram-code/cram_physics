@@ -157,6 +157,22 @@ sensor_msgs/JointStates message."
                             :suppress-callbacks t))))
     (tf:execute-changed-callbacks tf)))
 
+(defun set-tf2-from-robot-state (tf2-tb tf robot
+                                &key (base-frame "base_footprint")
+                                  (time (roslisp:ros-time)))
+  (let ((reference-transform-inv (cl-transforms:transform-inv
+                                  (cl-transforms:reference-transform
+                                   (link-pose robot base-frame)))))
+    (dolist (link (link-names robot) tf) ;; todo: check if tf result is actually needed
+      (unless (equal link base-frame)
+        (let ((transform (cl-transforms:transform*
+                          reference-transform-inv
+                          (cl-transforms:reference-transform
+                           (link-pose robot link)))))
+          (cl-tf2:send-transform tf2-tb (cl-tf2:make-stamped-transform
+                                base-frame link time
+                                transform)))))))
+
 (defun make-seed-states (robot joint-names &optional (steps 3))
   "Returns a sequence of possible seed states. The first seed state is
 the current state represented by `robot' the other states are

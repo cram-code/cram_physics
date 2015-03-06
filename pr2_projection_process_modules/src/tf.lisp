@@ -52,7 +52,34 @@
       (cl-transforms:make-identity-vector)
       (cl-transforms:make-identity-rotation))
      :suppress-callbacks t)
-    (bullet-reasoning:set-tf-from-robot-state *tf* ?robot-instance)))
+    (cl-tf2:send-transform
+     *tf2-tb*
+     (cl-tf2:make-stamped-transform
+      odom-frame base-frame (roslisp:ros-time)
+      (cl-transforms:make-transform (cl-transforms:origin ?robot-pose)
+        (cl-transforms:orientation ?robot-pose))))
+    (cl-tf2:send-transform
+     *tf2-tb*
+     (cl-tf2:make-stamped-transform
+      odom-frame map-frame (roslisp:ros-time)
+      (cl-transforms:transform-inv 
+        (cl-transforms:make-transform (cl-transforms:make-identity-vector)
+          (cl-transforms:make-identity-rotation)))))
+    (bullet-reasoning:set-tf-from-robot-state *tf* ?robot-instance)
+    (bullet-reasoning::set-tf2-from-robot-state *tf2-tb* *tf* ?robot-instance)))
+
+;; Needed to prevent an extrapolation error when the tf2 cache contains only one <frame>-<odom-combined> transform.
+;; Because update-tf will register <base-frame>-<odom-combined> and <odom-combined>-<map-frame> sequentially, 
+;; they are (likely) registered at different times, therefore a <map-frame>-<base-frame> lookup will use the min (earliest
+;; recorded time) among the pair of frames, even though the other frame has no transform registered at that time.
+;; The fix below this will prevent it, by guaranteeing the frames are defined over an interval, and the most recent common
+;; time will be inside this interval.
+(defun init-projection-tf (&key (base-frame "base_footprint")
+                    (odom-frame "odom_combined")
+                    (map-frame designators-ros:*fixed-frame*))
+  (update-tf :base-frame base-frame :odom-frame odom-frame :map-frame map-frame)
+  (roslisp:wait-duration 0.1)
+  (update-tf :base-frame base-frame :odom-frame odom-frame :map-frame map-frame))
 
 (defmethod cram-plan-knowledge:on-event update-tf
     ((event cram-plan-knowledge:robot-state-changed))
