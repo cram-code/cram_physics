@@ -51,7 +51,17 @@ just updated. Otherwise a new instance is created."))
 (defmethod register-object-designator-data
     ((data cram-manipulation-knowledge:object-shape-data-mixin) &key type)
   (declare (ignore type))
-  nil)
+  (let* ((object (event-object-designator data))
+         (name (desig:object-identifier object))
+         (dimensions (cram-manipulation-knowledge:dimensions data))
+         (pose (desig:object-pose data))
+         (mass 0.1))
+    (prolog `(and (bullet-world ?w)
+                  (btr:assert
+                   (btr:object
+                    ?w btr:box ,name ,pose
+                    :mass ,mass
+                    :size ,(map 'list #'identity dimensions)))))))
 
 (defmethod register-object-designator-data
     ((data cram-manipulation-knowledge:object-mesh-data-mixin) &key type)
