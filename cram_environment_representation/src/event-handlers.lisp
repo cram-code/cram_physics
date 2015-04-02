@@ -115,6 +115,25 @@
      (desig:reference (event-object-designator event))
      :type (desig:desig-prop-value (event-object-designator event) 'type))))
 
+(defmethod on-event object-updated ((event object-updated-event))
+  (unless cram-projection:*projection-environment*
+    (let* ((data (desig:reference (event-object-designator event)))
+           (object (event-object-designator data))
+           (name (desig:object-identifier object))
+           (pose (desig:object-pose data)))
+      (prolog `(and (bullet-world ?w)
+                    (assert
+                     (object-pose ?w ,name ,pose)))))))
+
+(defmethod on-event object-removed ((event object-removed-event))
+  (unless cram-projection:*projection-environment*
+    (let* ((data (desig:reference (event-object-designator event)))
+           (name (event-object-name data)))
+      (crs:prolog `(and (btr:bullet-world ?w)
+                        (btr:retract
+                         (btr:object
+                          ?w ,name)))))))
+
 (defun update-object-designator-location (object-designator location-designator)
   (desig:make-designator
    'desig:object
