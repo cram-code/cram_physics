@@ -70,7 +70,7 @@
            occluding-objects occluding-object valid-grasp grasp side reachable
            def-grasp def-tool object-grasp
            point-reachable pose-reachable blocking debug-window
-           debug-costmap head-pointing-at with-current-bullet-world
+           debug-costmap head-pointing-at with-current-bullet-world prolog-?w ?w
            reach-pose-ik reach-object-ik point-reachable-p reach-point-ik
            object-reachable-p pose-reachable-p calculate-orientation-in-robot
            calculate-object-tool-length set-robot-state-from-joints
@@ -94,6 +94,5 @@
            timeline-current-world-state timeline-lookup
            holds-in-world holds occurs at
            during throughout with-timeline)
-  (:import-from cram-roslisp-common *tf2*)
   (:desig-properties mug mondamin plate pot handle cutlery knife fork spatula
-                     pancake pancake-maker))
+                     pancake pancake-maker orange apple sugar-box cereal))

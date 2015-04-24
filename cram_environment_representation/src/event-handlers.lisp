@@ -85,7 +85,7 @@
     (let ((robot (get-robot-object)))
       (when robot
         (set-robot-state-from-tf
-         cram-roslisp-common:*tf* robot :timestamp (event-timestamp event)))))
+         cram-roslisp-common:*tf2-buffer* robot :timestamp (event-timestamp event)))))
   (timeline-advance
    *current-timeline*
    (make-event
@@ -138,7 +138,7 @@
     (assert object)
     (desig:make-designator
      'desig-props:location
-     `((pose ,(tf:pose->pose-stamped
+     `((pose ,(cl-tf-datatypes:pose->pose-stamped
                designators-ros:*fixed-frame* (cut:current-timestamp)
                (bt:pose object)))))))
 
@@ -146,7 +146,8 @@
   "Returns a new location designator that indicates a location in the
   robot's gripper."
   (declare (type object object))
-  (let* ((object-pose (tf:pose->pose-stamped
+  (roslisp:ros-info () "making desig in gripper ~a~%~%~%~%" gripper-link)
+  (let* ((object-pose (cl-tf-datatypes:pose->pose-stamped
                        designators-ros:*fixed-frame* 0.0
                        (btr:pose object)))
          (robot (get-robot-object)))
@@ -168,13 +169,13 @@
 (defun object-pose-in-frame (object frame)
   (declare (type object object)
            (type string frame))
-  (tf:copy-pose-stamped
-   (cl-tf2:ensure-pose-stamped-transformed
-    *tf2* (tf:pose->pose-stamped
-           designators-ros:*fixed-frame* 0.0
-           (btr:pose object))
-    frame
-    :use-current-ros-time t)
+  (cl-tf-datatypes:copy-pose-stamped
+   (cl-tf2:transform-pose
+    *tf2-buffer*
+    :pose (cl-tf-datatypes:pose->pose-stamped
+           designators-ros:*fixed-frame* 0.0 (btr:pose object))
+    :target-frame frame
+    :timeout cram-roslisp-common:*tf-default-timeout*)
    :stamp 0.0))
 
 (defun extend-designator-properties (designator property-extension)
